@@ -1,0 +1,47 @@
+Create TABLE Date_Worldwide(
+	Date date PRIMARY KEY,
+	Confirmed int,
+	Recovered int,
+	Deaths int,
+	increase_rate numeric(1000,10)
+);
+
+COPY Date_Worldwide FROM 'F:/university course/Year 2/DST/ICA/ICA part2/covid-19_zip/archive/worldwide-aggregate.csv' CSV HEADER;
+
+ALTER TABLE Date_Worldwide DROP COLUMN increase_rate; 
+
+CREATE TABLE cp(
+	Date date,
+	Country VARCHAR(20),
+	Province VARCHAR(20),
+	Confirmed int,
+	Recovered int,
+	Deaths int
+);
+
+COPY Date_Worldwide FROM 'F:/university course/Year 2/DST/ICA/ICA part2/covid-19_zip/archive/worldwide-aggregate.csv' CSV HEADER;
+
+CREATE TABLE Date_Country(
+	Date date,
+	Country VARCHAR(100),
+	Confirmed int,
+	Recovered int,
+	Deaths int,
+	PRIMARY KEY (Date, Country),
+	FOREIGN KEY (Date) REFERENCES Date_Worldwide
+);
+COPY Date_Country FROM 'F:/university course/Year 2/DST/ICA/ICA part2/covid-19_zip/archive/countries-aggregated.csv' CSV HEADER;
+
+CREATE TABLE Date_Province(
+	Date date,
+	Country VARCHAR(100),
+	Province VARCHAR(100),
+	Confirmed int,
+	Recovered int,
+	Deaths int,
+	PRIMARY KEY (Date,Province),
+	FOREIGN KEY (Date,Country) REFERENCES Date_Country
+);
+INSERT INTO Date_Province (SELECT * FROM cp WHERE Province NOTNULL);
+
+DROP TABLE cp;
