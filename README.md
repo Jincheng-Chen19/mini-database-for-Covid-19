@@ -1,1 +1,1 @@
-# mini-database for covid_19
+# mini-database for Covid-19
